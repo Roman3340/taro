@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f9;
+    text-align: center;
+    overflow: hidden;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 44px;
+    color: #333;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px; /* Ограничиваем ширину */
+}
+
+.main-images {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px; /* Увеличиваем отступы между картами */
+    justify-content: center;
+}
+
+.main-image {
+    width: 200px; /* Уменьшаем ширину карты */
+    height: 320px; /* Пропорционально уменьшаем высоту */
+    perspective: 1000px; /* Задаем перспективу для 3D переворота */
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+    transform: rotateY(0deg);
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Скрываем обратную сторону карты */
+}
+
+.card-back {
+    background-color: #ccc;
+}
+
+.card-front {
+    transform: rotateY(180deg); /* Поворачиваем лицевую сторону на 180 градусов */
+}
+
+.card img {
+    width: 100%; /* Изображения карт заполняют контейнер */
+    height: 100%;
+    object-fit: cover; /* Подгоняем изображение по размеру карты */
+}
+
+/* Адаптивный стиль для мобильных устройств */
+@media only screen and (max-width: 600px) {
+    .main-image {
+        width: 120px; /* Уменьшаем ширину карт на мобильных устройствах */
+        height: 260px; /* Увеличиваем высоту, чтобы сохранить соотношение сторон */
+    }
+
+    .header {
+        font-size: 20px; /* Уменьшаем размер шрифта на мобильных устройствах */
+    }
+}
