@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Бот-таролог онлайн</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<header class="header">
+    <span>Выберите карты</span>
+</header>
+
+<main class="main">
+    <div id="cardsContainer" class="main-images">
+        <!-- Карты -->
+        <div class="main-image" onclick="flipCard(this)">
+            <div class="card">
+                <div class="card-face card-back">
+                    <img src="images/backpurple.jpg" alt="Рубашка карты">
+                </div>
+                <div class="card-face card-front"></div>
+            </div>
+        </div>
+        <!-- Карты -->
+        <div class="main-image" onclick="flipCard(this)">
+            <div class="card">
+                <div class="card-face card-back">
+                    <img src="images/backpurple.jpg" alt="Рубашка карты">
+                </div>
+                <div class="card-face card-front"></div>
+            </div>
+        </div>
+        <!-- Карты -->
+        <div class="main-image" onclick="flipCard(this)">
+            <div class="card">
+                <div class="card-face card-back">
+                    <img src="images/backpurple.jpg" alt="Рубашка карты">
+                </div>
+                <div class="card-face card-front"></div>
+            </div>
+        </div>
+        <!-- Карты -->
+        <div class="main-image" onclick="flipCard(this)">
+            <div class="card">
+                <div class="card-face card-back">
+                    <img src="images/backpurple.jpg" alt="Рубашка карты">
+                </div>
+                <div class="card-face card-front"></div>
+            </div>
+        </div>
+        <!-- Карты -->
+        <div class="main-image" onclick="flipCard(this)">
+            <div class="card">
+                <div class="card-face card-back">
+                    <img src="images/backpurple.jpg" alt="Рубашка карты">
+                </div>
+                <div class="card-face card-front"></div>
+            </div>
+        </div>
+        <!-- Карты -->
+        <div class="main-image" onclick="flipCard(this)">
+            <div class="card">
+                <div class="card-face card-back">
+                    <img src="images/backpurple.jpg" alt="Рубашка карты">
+                </div>
+                <div class="card-face card-front"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Кнопка отправки карт -->
+<!--    <button id="sendCardsButton" style="display:none;">Отправить карты</button>-->
+</main>
+
+<script>
+    const tg = window.Telegram.WebApp;
+
+    const cardImages = [
+        "images/RWS_Tarot_00_Fool.jpg",
+        "images/RWS_Tarot_01_Magician.jpg",
+        "images/RWS_Tarot_02_High_Priestess.jpg",
+        "images/RWS_Tarot_03_Empress.jpg",
+        "images/RWS_Tarot_04_Emperor.jpg",
+        "images/RWS_Tarot_05_Hierophant.jpg"
+    ];
+
+    const maxFlippedCards = 3;
+    let flippedCardsCount = 0;
+    let selectedCards = [];
+
+    tg.MainButton.text = "Отправить карты";
+    tg.MainButton.setParams({ color: '#FCD5CEFF' });
+    tg.MainButton.hide();
+
+    // Функция переворота карты
+    function flipCard(cardElement) {
+        const card = cardElement.querySelector('.card');
+
+        if (card.classList.contains('flipped') || flippedCardsCount >= maxFlippedCards) {
+            return; // Блокируем выбор больше 3 карт
+        }
+
+        flippedCardsCount += 1;
+        const frontFace = cardElement.querySelector('.card-front img');
+        if (!frontFace) {
+            const imgElement = document.createElement('img');
+            const randomCard = getRandomCard();
+            imgElement.src = randomCard;
+            selectedCards.push(randomCard.split('/').pop().replace('.jpg', ''));
+            cardElement.querySelector('.card-front').appendChild(imgElement);
+        }
+
+        card.classList.add('flipped');
+
+        // Когда выбрано 3 карты
+        if (flippedCardsCount === maxFlippedCards) {
+            tg.MainButton.show();
+            setTimeout(() => {
+                fadeOutUnselectedCards();
+                setTimeout(() => {
+                    removeUnselectedCards();
+                    alignSelectedCards();
+                }, 800);
+            }, 800);
+        }
+    }
+
+    // Функция получения случайной карты
+    function getRandomCard() {
+        const randomIndex = Math.floor(Math.random() * cardImages.length);
+        const selectedCard = cardImages[randomIndex];
+        cardImages.splice(randomIndex, 1); // Убираем выбранную карту из массива
+        return selectedCard;
+    }
+
+    // Анимация исчезновения невыбранных карт
+    function fadeOutUnselectedCards() {
+        const allCards = document.querySelectorAll('.main-image');
+        allCards.forEach(card => {
+            if (!card.querySelector('.card').classList.contains('flipped')) {
+                card.classList.add('fade-out'); // Добавляем анимацию исчезновения
+            }
+        });
+    }
+
+    // Удаление невыбранных карт из DOM
+    function removeUnselectedCards() {
+        const allCards = document.querySelectorAll('.main-image');
+        allCards.forEach(card => {
+            if (!card.querySelector('.card').classList.contains('flipped')) {
+                card.remove(); // Удаляем невыбранные карты
+            }
+        });
+    }
+
+    // Выравнивание выбранных карт
+    function alignSelectedCards() {
+        const container = document.getElementById('cardsContainer');
+        const selectedCards = document.querySelectorAll('.main-image .card.flipped');
+
+        container.classList.add('align-selected'); // Меняем сетку на flex
+
+        // Применяем анимацию перемещения
+        selectedCards.forEach(card => {
+            card.parentElement.classList.add('moving');
+        });
+    }
+
+    tg.MainButton.onClick(function () {
+        const selectedCardNames = selectedCards.join(',');
+
+        if (selectedCardNames.length === 0) {
+            console.error("Нет выбранных карт для отправки");
+            return;
+        }
+
+        tg.sendData(selectedCardNames);
+        console.log("Карты отправлены в Telegram:", selectedCardNames);
+
+        tg.close();
+    });
+</script>
+
+</body>
+</html>

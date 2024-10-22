@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url("../fonts/Montserrat-SemiBold.ttf");
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    overflow: hidden;
+    margin-top: 100px;
+    background: linear-gradient(90deg, #ffb5a7, #fcd5ce, #f8edeb, #fcd5ce, #ffb5a7);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 44px;
+    color: #333;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 700px;
+}
+
+.main-images {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    justify-content: center;
+    transition: all 0.5s ease;
+
+}
+
+.main-image {
+    width: 200px;
+    height: 330px;
+    perspective: 1000px;
+    transition: opacity 0.5s ease, transform 1s ease;
+    position: relative;
+}
+
+.main-image img {
+    border-radius: 12px;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+    transform: rotateY(0deg);
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.card-back {
+    background-color: #ccc;
+    border-radius: 12px;
+}
+
+.card-front {
+    transform: rotateY(180deg);
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hide {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.selected-cards {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.fade-out {
+    animation: fadeOut 0.8s forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* Анимация плавного перемещения */
+.align-selected {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.main-image.animate-move {
+    transform: translateY(0); /* Устанавливаем изначальное положение для перемещения */
+}
+
+/* Используем keyframes для плавного перемещения выбранных карт */
+/*@keyframes moveToCenter {*/
+/*    from {*/
+/*        transform: translateY(0);*/
+/*    }*/
+/*    to {*/
+/*        transform: translateY(-50px); !* Задаем сдвиг карт к центру по оси Y *!*/
+/*    }*/
+/*}*/
+
+.main-image.moving {
+    animation: moveToCenter 0.8s forwards; /* Анимация перемещения */
+}
+
+@media only screen and (max-width: 600px) {
+    .main-image {
+        width: 120px;
+        height: 260px;
+    }
+
+    .header {
+        font-size: 20px;
+    }
+}
